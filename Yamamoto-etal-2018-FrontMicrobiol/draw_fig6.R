@@ -3,7 +3,7 @@
 
 # 推奨：Docker版R/bioconductor環境で動かす
 # 本スクリプトファイルがあるディレクトリで
-# $ docker run -it -v $PWD:/mnt bioconductor/release_base2:R3.5.2_Bioc3.8 R
+# $ docker run -it -v $PWD:/mnt bioconductor/release_base2:R3.6.0_Bioc3.9 R
 # >source("/mnt/draw_fig6.R")
 
 # パッケージのインストール
@@ -14,7 +14,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 
 # phyloseq
 if (!requireNamespace("phyloseq", quietly = TRUE)) {
-  BiocManager::install("phyloseq", version = "3.8")
+  BiocManager::install("phyloseq", version = "3.9")
 }
 library("phyloseq")
 library("ape")
