@@ -69,6 +69,8 @@ $ qiime demux summarize \
 ### シーケンスQCとFeature tableの構築
 
 ```
+# 使用可能なCPUコア数を確認
+$ sysctl -n hw.logicalcpu_max
 $ qiime dada2 denoise-paired \
 --verbose \
 --p-n-threads 0 \
@@ -166,6 +168,8 @@ $ qiime diversity alpha-rarefaction \
 ### 系統解析
 
 ```
+# 使用可能なCPUコア数を確認
+$ sysctl -n hw.logicalcpu_max
 $ qiime feature-classifier classify-sklearn \
 --p-n-jobs -1 \
 --i-classifier gg-13-8-99-nb-classifier.qza \
