@@ -1,5 +1,12 @@
 # QIIME2-01
 
+## 変更履歴
+
+- 2019/11/09
+  - 公開
+- 2020/04/22
+  - qiime2-2020.2での動作確認と一部コマンド引数の修正
+
 ## 解析準備
 
 ### QIIME 2 のインストール
@@ -7,16 +14,21 @@
 ```
 $ conda update conda
 $ conda install wget
-$ wget https://data.qiime2.org/distro/core/qiime2-2019.4-py36-osx-conda.yml
-$ conda env create -n qiime2-2019.4 --file qiime2-2019.4-py36-osx-conda.yml
-$ rm qiime2-2019.4-py36-osx-conda.yml
-$ conda activate qiime2-2019.4
+$ wget https://data.qiime2.org/distro/core/qiime2-2020.2-py36-osx-conda.yml
+$ conda env create -n qiime2-2020.2 --file qiime2-2020.2-py36-osx-conda.yml
+$ rm qiime2-2020.2-py36-osx-conda.yml
+$ conda activate qiime2-2020.2
 $ qiime --help
 ```
 
 ### rename のインストール
 
 ```
+# Biocondaを使う準備
+$ conda config --add channels defaults
+$ conda config --add channels conda-forge
+$ conda config --add channels bioconda
+
 $ conda install rename
 $ rename
 ```
@@ -55,7 +67,7 @@ $ ls
 ### FASTQファイルのインポート
 
 ```
-$ conda activate qiime2-2019.4
+$ conda activate qiime2-2020.2
 $ cd ~/qiime2
 
 $ qiime tools import \
@@ -199,10 +211,11 @@ $ qiime taxa collapse \
 --p-level 5 \
 --o-collapsed-table table-l5.qza
 
+# バージョン2020.2から引数名が一部変更
 $ qiime feature-table heatmap \
 --i-table table-l5.qza \
---m-metadata-file metadata.txt \
---m-metadata-column group \
+--m-sample-metadata-file metadata.txt \
+--m-sample-metadata-column group \
 --o-visualization heatmap_l5_group.qzv
 ```
 
