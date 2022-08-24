@@ -6,6 +6,9 @@
   - 公開
 - 2020/04/22
   - qiime2-2020.2での動作確認と一部コマンド引数の修正
+- 2022/08/24
+  - SRA Toolkit の仕様が変更されたのでインストール方法を追記
+  - SRA Toolkit の仕様が変更されたので解析用データのダウンロード手順を修正
 
 ## 解析準備
 
@@ -19,6 +22,41 @@ $ conda env create -n qiime2-2020.2 --file qiime2-2020.2-py36-osx-conda.yml
 $ rm qiime2-2020.2-py36-osx-conda.yml
 $ conda activate qiime2-2020.2
 $ qiime --help
+```
+
+### SRA Toolkit のインストール
+
+書籍中で紹介していたconda経由でのインストールが動かなくなったので、以下の方法でインストール
+
+```
+$ cd ~/Downloads
+$ wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-mac64.tar.gz
+$ mv sratoolkit.current-mac64.tar.gz /Applications
+$ cd /Applications
+$ tar -vxzf sratoolkit.current-mac64.tar.gz
+
+# 解凍されたフォルダ名を確認する
+$ ls
+（中略）sratoolkit.3.0.0-mac64
+
+# パス設定を追記（下記の sratoolkit.?.?.?-mac64 は上記のフォルダ名と一致させる）
+$ echo "export PATH=$PATH:/Applications/sratoolkit.3.0.0-mac64/bin" >> ~/.zshrc
+
+# 上記設定を即時反映
+$ source ~/.zshrc
+
+# SRA Toolkitの環境設定
+$ vdb-config --interactive
+環境設定画面が表示される、キーボードの「x」キーを押して終了させる
+
+# 動作確認
+% fasterq-dump
+（下記のメッセージが表示されればOK）
+Usage:
+  fasterq-dump.3.0.0 <path> [options]
+
+# 元のファイルの削除
+$ rm sratoolkit.current-mac64.tar.gz
 ```
 
 ### rename のインストール
@@ -46,15 +84,23 @@ $ ls
 
 ### 解析用データのダウンロード
 
+SRA Toolkitの仕様が変更されたので、以下の方法でFASTQファイルをダウンロード
+
 ```
 $ cd ~/qiime2
 $ mv ~/Downloads/SRR_Acc_List.txt .
 $ mv ~/Downloads/SraRunTable.txt .
 $ cat SRR_Acc_List.txt
-$ prefetch --option-file SRR_Acc_List.txt
-$ mkdir fastq
+
+$ sysctl -n hw.ncpu # CPUコア数の表示
+4 # 使用したMacのCPUは4コア
+
+# -eでコア数指定, -Oでfastqディレクトリに出力
+% cat SRR_Acc_List.txt | xargs -n1 \
+fasterq-dump -p \
+-e 4 -O fastq
+
 $ cd fastq
-$ cat ../SRR_Acc_List.txt | xargs -n1 fastq-dump --gzip --split-files
 $ ls *
 $ ls * | wc -l
 $ rename 's/_1/_S1_L001_R1_001/' *.fastq.gz
